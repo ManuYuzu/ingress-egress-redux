@@ -39,8 +39,7 @@ export class AuthService {
 
             const newUser = new User( user.uid, username, user.email );
 
-            return this.firestore.doc(`${ user.uid }/user`)
-              .set({ ...newUser })
+            return this.firestore.doc(`${ user.uid }/user`).set({ ...newUser })
 
           })
 

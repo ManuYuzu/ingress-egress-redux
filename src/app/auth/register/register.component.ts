@@ -1,21 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth.service';
+import { AppState } from '../../app.reducer';
+import * as ui from '../../shared/ui.actions';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styles: ``
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
 
   registerForm!: FormGroup;
+  loading: boolean = false;
+  uiSubscription!: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private store: Store<AppState>,
     private router: Router
   ) {}
 
@@ -27,31 +34,43 @@ export class RegisterComponent implements OnInit {
       password: new FormControl('', [Validators.required]),
     });
 
+    this.uiSubscription = this.store
+      .select('ui')
+      .subscribe( ui => this.loading = ui.isLoading );
+  }
+
+  ngOnDestroy(): void {
+    this.uiSubscription.unsubscribe();
   }
 
   createUser() {
     if ( !this.registerForm.valid ) return;
 
-    Swal.fire({
-        title: "Un momento, por favor...",
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
+    this.store.dispatch( ui.isLoading() );
+
+    // Swal.fire({
+    //     title: "Un momento, por favor...",
+    //     didOpen: () => {
+    //       Swal.showLoading();
+    //     }
+    //   });
 
     const { user, email, password } = this.registerForm.value;
 
     this.authService.createUser( user, email, password )
       .then(
-        credentials => {
-          console.log(credentials);
+        () => {
 
-          Swal.close();
+          // Swal.close();
+
+          this.store.dispatch( ui.stopLoading() );
 
           this.router.navigate(['/'])
         }
       )
       .catch( error => {
+        this.store.dispatch( ui.stopLoading() );
+
         const fixedMessage = error.message
           .replace('Firebase: ', '')
           .replace(/\(.*?\)./g, '')
