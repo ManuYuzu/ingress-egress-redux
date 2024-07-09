@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = '04-ingress-egress-app';
+  constructor( private authService: AuthService ) {
+
+    this.authService.initAuthListener();
+
+  }
 }
