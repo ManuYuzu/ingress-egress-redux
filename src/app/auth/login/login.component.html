@@ -31,11 +31,19 @@
               </div>
             </div>
 
+            @if(loading) {
+            <div class="form-group">
+              <button type="button" [disabled]="true" class="btn btn-primary submit-btn btn-block">
+                <i class="fa fa-spin fa-sync"></i>
+                Wait...
+              </button>
+            </div>
+            } @else {
             <div class="form-group">
               <button type="submit" [disabled]="!loginForm.valid"
                 class="btn btn-primary submit-btn btn-block">Login</button>
             </div>
-
+            }
 
             <div class="text-block text-center my-3">
               <span class="text-small font-weight-semibold">No estas registrado? </span>
