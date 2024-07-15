@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AppState } from '../../app.reducer';
 import { Store } from '@ngrx/store';
 import { IngressEgress } from '../../models/ingress-egress.model';
 import { ChartConfiguration } from 'chart.js';
+import { AppStateIngressEgress } from '../ingress-egress.reducer';
 
 @Component({
   selector: 'app-statistics',
@@ -22,7 +22,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   totalEgress: number = 0;
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppStateIngressEgress>
   ) {}
 
   ngOnInit() {
