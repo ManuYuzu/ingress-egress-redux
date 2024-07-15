@@ -15,12 +15,24 @@
           </thead>
 
           <tbody>
+            @for( item of ingressEgress | ingressEgressOrder; track $index) {
+
             <tr>
-              <td>Descripción</td>
-              <td>Monto</td>
-              <td>Tipo</td>
-              <td>acciones</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.amount | currency: 'EUR' }}</td>
+              <td [class]="item.type === 'ingress'
+                ? 'text-success'
+                : 'text-danger'" class="font-weight-bold">
+                {{ item.type | titlecase }}
+              </td>
+              <td>
+                <button type="button" (click)="remove(item.uid)" class="btn btn-danger">
+                  <i class="fa fa-trash m-0"></i>
+                </button>
+              </td>
             </tr>
+
+            }
           </tbody>
 
         </table>
